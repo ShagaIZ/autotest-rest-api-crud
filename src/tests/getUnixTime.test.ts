@@ -1,11 +1,12 @@
 import { test, expect } from '@playwright/test';
 import { API_KEY } from '../../api_key';
+import { urls } from '../common/urls';
 
 
 
 
 test('Getting unix time from server', async({request})=>{
-    let res = await request.get('/api/v1/probe',{
+    let res = await request.get(urls.probe,{
     headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
