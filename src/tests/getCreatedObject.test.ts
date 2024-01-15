@@ -15,18 +15,26 @@ test.afterEach('Deleting created object',async({request})=>{
 })
 
 
-test('Creating object user Ivan', async({request})=>{
-    let res = await request.post(`${urls.main}user`,{
+test('Geting data of created object user Ivan', async({request})=>{
+    await request.post(`${urls.main}user`,{
     headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
       data: dataRequest.user
     }
 )
+    
+    let res = await request.get(`${urls.main}user`,{
+        headers: {
+            Authorization: `Bearer ${API_KEY}`,
+          }
+    
+        }
+    )
     let resJson = await res.json()
     uuid = await resJson.items[0]._uuid
     await expect(res).toBeOK()
-    await expect(res.status()).toBe(201)
+    await expect(res.status()).toBe(200)
     await expect(resJson.items[0]).toBeTruthy()
     await expect(resJson.items[0]._created).toBeTruthy()
     await expect(resJson.items[0]._data_type).toBeTruthy()
