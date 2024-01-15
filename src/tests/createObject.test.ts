@@ -6,7 +6,7 @@ import { dataRequest } from '../common/data';
 let uuid: string
 
 test.afterEach('Deleting created object',async({request})=>{
-     await request.delete('/api/v1/user',{
+     await request.delete(`${urls.main}user`,{
         headers: {
             Authorization: `Bearer ${API_KEY}`,
           },
