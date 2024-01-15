@@ -45,4 +45,5 @@ test('Geting data of created object user Ivan', async({request})=>{
     await expect(resJson.items[0]._uuid).toBeTruthy()
     await expect(resJson.items[0].city).toBe('Moscow')
     await expect(resJson.items[0].name).toBe('Ivan')
+    await expect(resJson.items[0].age).toBe(25)
 })
