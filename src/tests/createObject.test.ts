@@ -20,7 +20,7 @@ test('Creating object', async({request})=>{
     headers: {
         Authorization: `Bearer ${API_KEY}`,
       },
-      data: dataRequest.user
+      data: dataRequest.userOne
     }
 )
     let resJson = await res.json()
