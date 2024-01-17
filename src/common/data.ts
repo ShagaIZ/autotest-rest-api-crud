@@ -1,5 +1,6 @@
 export const dataRequest = {
-    user: '[{"name": "Ivan", "age": 25, "city":"Moscow"}]'
+    userOne: '[{"name": "Ivan", "age": 25, "city":"Moscow"}]',
+    userTwo: '[{"name": "Dan", "age": 45, "city":"Chicago"}]'
 }
 
 export const getNewUser = (uuid) => {
