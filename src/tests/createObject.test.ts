@@ -15,7 +15,7 @@ test.afterEach('Deleting created object',async({request})=>{
 })
 
 
-test('Creating object user Ivan', async({request})=>{
+test('Creating object', async({request})=>{
     let res = await request.post(`${urls.main}user`,{
     headers: {
         Authorization: `Bearer ${API_KEY}`,
