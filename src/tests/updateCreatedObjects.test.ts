@@ -57,6 +57,7 @@ test.describe('Updating created objects', async () => {
 		})
 		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
 		let resUpdatetUserTwoJson = await resUpdatetUserTwo.json()
+		//First block assertation
 		await expect(resUpdatetUserOne).toBeOK()
 		await expect(resUpdatetUserOne.status()).toBe(200)
 		await expect(resUpdatetUserOneJson.items[0]).toBeTruthy()
@@ -70,6 +71,7 @@ test.describe('Updating created objects', async () => {
 		await expect(resUpdatetUserOneJson.items[0].city).toBe('London')
 		await expect(resUpdatetUserOneJson.items[0].name).toBe('Roman')
 		await expect(resUpdatetUserOneJson.items[0].age).toBe(35)
+		//Second block assertation
 		await expect(resUpdatetUserTwo).toBeOK()
 		await expect(resUpdatetUserTwo.status()).toBe(200)
 		await expect(resUpdatetUserTwoJson.items[0]).toBeTruthy()
