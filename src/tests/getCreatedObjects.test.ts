@@ -6,6 +6,26 @@ import { dataRequest } from '../common/data'
 let uuidUserOne: string
 let uuidUserTwo: string
 
+test.beforeEach('Creating objects', async ({ request }) => {
+	let resCreateUserOne = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userOne,
+	})
+	let resCreateUserTwo = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userTwo,
+	})
+
+	let resjsonCreateUserOne = await resCreateUserOne.json()
+	let resjsonCreateUserTwo = await resCreateUserTwo.json()
+	uuidUserOne = await resjsonCreateUserOne.items[0]._uuid
+	uuidUserTwo = await resjsonCreateUserTwo.items[0]._uuid
+})
+
 test.afterEach('Deleting created object', async ({ request }) => {
 	await request.delete(`${urls.main}user`, {
 		headers: {
@@ -23,27 +43,12 @@ test.afterEach('Deleting created object', async ({ request }) => {
 })
 
 test('Geting data of created objects', async ({ request }) => {
-	await request.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userOne,
-	})
-	await request.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userTwo,
-	})
-
 	let res = await request.get(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
 		},
 	})
 	let resJson = await res.json()
-	uuidUserOne = await resJson.items[1]._uuid
-	uuidUserTwo = await resJson.items[0]._uuid
 	await expect(res).toBeOK()
 	await expect(res.status()).toBe(200)
 	await expect(resJson.items[1]).toBeTruthy()
@@ -68,4 +73,35 @@ test('Geting data of created objects', async ({ request }) => {
 	await expect(resJson.items[0].city).toBe('Chicago')
 	await expect(resJson.items[0].name).toBe('Dan')
 	await expect(resJson.items[0].age).toBe(45)
+})
+
+test('Geting data of created objects with invaild url', async ({ request }) => {
+	let res = await request.get(`%%%^${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	await expect(res.status()).toBe(400)
+})
+
+test('Geting data of created objects with invaild method', async ({ request }) => {
+	let res = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	let resJson = await res.json()
+	await expect(resJson.error).toBe('Bad request')
+	await expect(res.status()).toBe(400)
+})
+
+test('Geting data of created objects without token', async ({ request }) => {
+	let res = await request.get(`${urls.main}user`, {
+		headers: {
+			Authorization: ``,
+		},
+	})
+	let resJson = await res.json()
+	await expect(resJson.error).toBe('Bad request')
+	await expect(res.status()).toBe(400)
 })

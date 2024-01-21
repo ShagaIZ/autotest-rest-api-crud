@@ -14,7 +14,7 @@ test.afterEach('Deleting created object', async ({ request }) => {
 	})
 })
 
-test('Creating object', async ({ request }) => {
+test('Creating object with valid data and url', async ({ request }) => {
 	let res = await request.post(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
@@ -36,4 +36,48 @@ test('Creating object', async ({ request }) => {
 	await expect(resJson.items[0].city).toBe('Moscow')
 	await expect(resJson.items[0].name).toBe('Ivan')
 	await expect(resJson.items[0].age).toBe(25)
+})
+
+test('Creating object with invaild url', async ({ request }) => {
+	let res = await request.post(`#@#${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userOne,
+	})
+	await expect(res.status()).toBe(405)
+})
+
+test('Creating object with empty data', async ({ request }) => {
+	let res = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: '',
+	})
+	let resJson = await res.json()
+	await expect(resJson.error).toBe('Bad request')
+	await expect(res.status()).toBe(400)
+})
+
+test('Creating object with invalid method', async ({ request }) => {
+	let res = await request.get(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userOne,
+	})
+	await expect(res.status()).toBe(400)
+})
+
+test('Creating object without token', async ({ request }) => {
+	let res = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: ``,
+		},
+		data: dataRequest.userOne,
+	})
+	let resJson = await res.json()
+	await expect(resJson.error).toBe('Bad request')
+	await expect(res.status()).toBe(400)
 })

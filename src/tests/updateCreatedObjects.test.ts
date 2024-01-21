@@ -6,6 +6,26 @@ import { dataRequest, getNewUser } from '../common/data'
 let uuidUserOne: string
 let uuidUserTwo: string
 
+test.beforeEach('Creating objects', async ({ request }) => {
+	let resCreateUserOne = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userOne,
+	})
+	let resCreateUserTwo = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userTwo,
+	})
+
+	let resjsonCreateUserOne = await resCreateUserOne.json()
+	let resjsonCreateUserTwo = await resCreateUserTwo.json()
+	uuidUserOne = await resjsonCreateUserOne.items[0]._uuid
+	uuidUserTwo = await resjsonCreateUserTwo.items[0]._uuid
+})
+
 test.afterEach('Deleting created objects', async ({ request }) => {
 	await request.delete(`${urls.main}user`, {
 		headers: {
@@ -23,28 +43,6 @@ test.afterEach('Deleting created objects', async ({ request }) => {
 })
 
 test('Updating created objects', async ({ request }) => {
-	await request.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userOne,
-	})
-	await request.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userTwo,
-	})
-
-	let res = await request.get(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-	})
-	let resJson = await res.json()
-	uuidUserOne = await resJson.items[0]._uuid
-	uuidUserTwo = await resJson.items[1]._uuid
-
 	let resUpdatetUserOne = await request.put(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
@@ -85,4 +83,49 @@ test('Updating created objects', async ({ request }) => {
 	await expect(resUpdatetUserTwoJson.items[0].city).toBe('London')
 	await expect(resUpdatetUserTwoJson.items[0].name).toBe('Roman')
 	await expect(resUpdatetUserTwoJson.items[0].age).toBe(35)
+})
+
+test('Updating created objects with invalid url', async ({ request }) => {
+	let resUpdatetUserOne = await request.put(`$$#$#${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: getNewUser(uuidUserOne),
+	})
+
+	await expect(resUpdatetUserOne.status()).toBe(404)
+})
+
+test('Updating created objects with empty data', async ({ request }) => {
+	let resUpdatetUserOne = await request.put(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: '',
+	})
+	let resUpdatetUserOneJson = await resUpdatetUserOne.json()
+	await expect(resUpdatetUserOneJson.error).toBe('Bad request')
+	await expect(resUpdatetUserOne.status()).toBe(400)
+})
+
+test('Updating created objects without token', async ({ request }) => {
+	let resUpdatetUserOne = await request.put(`${urls.main}user`, {
+		headers: {
+			Authorization: ``,
+		},
+		data: getNewUser(uuidUserOne),
+	})
+	let resUpdatetUserOneJson = await resUpdatetUserOne.json()
+	await expect(resUpdatetUserOneJson.error).toBe('Bad request')
+	await expect(resUpdatetUserOne.status()).toBe(400)
+})
+
+test('Updating created objects with invalid method', async ({ request }) => {
+	let resUpdatetUserOne = await request.get(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: getNewUser(uuidUserOne),
+	})
+	await expect(resUpdatetUserOne.status()).toBe(400)
 })

@@ -5,6 +5,17 @@ import { dataRequest } from '../common/data'
 
 let uuidUserTwo: string
 
+test.beforeEach('Deleting created object', async ({ request }) => {
+	let res = await request.post(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: dataRequest.userTwo,
+	})
+	let resJson = await res.json()
+	uuidUserTwo = await resJson.items[0]._uuid
+})
+
 test.afterEach('Deleting created object', async ({ request }) => {
 	await request.delete(`${urls.main}user`, {
 		headers: {
@@ -15,14 +26,6 @@ test.afterEach('Deleting created object', async ({ request }) => {
 })
 
 test('Geting data of specific created object', async ({ request }) => {
-	let res = await request.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userTwo,
-	})
-	let resJson = await res.json()
-	uuidUserTwo = await resJson.items[0]._uuid
 	let resGetObject = await request.get(`${urls.main}user/${uuidUserTwo}`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
@@ -42,4 +45,42 @@ test('Geting data of specific created object', async ({ request }) => {
 	await expect(resGetObjectJson.city).toBe('Chicago')
 	await expect(resGetObjectJson.name).toBe('Dan')
 	await expect(resGetObjectJson.age).toBe(45)
+})
+
+test('Geting data of specific created object with invaild url', async ({ request }) => {
+	let resGetObject = await request.get(`%$%$%${urls.main}user/${uuidUserTwo}`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	await expect(resGetObject.status()).toBe(400)
+})
+
+test('Geting data of specific created object with invalid method', async ({ request }) => {
+	let resGetObject = await request.post(`${urls.main}user/${uuidUserTwo}`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	await expect(resGetObject.status()).toBe(405)
+})
+
+test('Geting data of specific created object without token', async ({ request }) => {
+	let resGetObject = await request.get(`${urls.main}user/${uuidUserTwo}`, {
+		headers: {
+			Authorization: ``,
+		},
+	})
+	let resGetObjectJson = await resGetObject.json()
+	await expect(resGetObjectJson.error).toBe('Bad request')
+	await expect(resGetObject.status()).toBe(400)
+})
+
+test('Geting data of specific created object with invalid uuid', async ({ request }) => {
+	let resGetObject = await request.post(`${urls.main}user/&^&^&^&`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	await expect(resGetObject.status()).toBe(405)
 })

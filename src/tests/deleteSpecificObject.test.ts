@@ -16,11 +16,20 @@ test.beforeEach('Deleting created object', async ({ request }) => {
 	uuid = await resJson.items[0]._uuid
 })
 
+test.afterEach('Creating object', async ({ request }) => {
+	await request.delete(`${urls.main}user`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+		data: `[{"_uuid": "${uuid}"}]`,
+	})
+})
+
 test('Deleting specific created object user', async ({ request }) => {
 	let resDelete = await request.delete(`${urls.main}user/${uuid}`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
-		}
+		},
 	})
 	let resDeleteJson = await resDelete.json()
 	await expect(resDelete).toBeOK()
@@ -36,4 +45,33 @@ test('Deleting specific created object user', async ({ request }) => {
 	await expect(resDeleteJson.city).toBe('Moscow')
 	await expect(resDeleteJson.name).toBe('Ivan')
 	await expect(resDeleteJson.age).toBe(25)
+})
+
+test('Deleting specific created object with invaild url', async ({ request }) => {
+	let resDelete = await request.delete(`asas${urls.main}user/${uuid}`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	await expect(resDelete.status()).toBe(404)
+})
+
+test('Deleting specific created object with invalid uuid', async ({ request }) => {
+	let resDelete = await request.delete(`${urls.main}user/1212121212ggg`, {
+		headers: {
+			Authorization: `Bearer ${API_KEY}`,
+		},
+	})
+	await expect(resDelete.status()).toBe(400)
+})
+
+test('Deleting specific created object without token', async ({ request }) => {
+	let resDelete = await request.delete(`${urls.main}user/${uuid}`, {
+		headers: {
+			Authorization: ``,
+		},
+	})
+	let resJson = await resDelete.json()
+	await expect(resJson.error).toBe('Bad request')
+	await expect(resDelete.status()).toBe(400)
 })
