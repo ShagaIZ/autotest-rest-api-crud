@@ -5,7 +5,7 @@ import { dataRequest } from '../common/data'
 
 let uuid: string
 
-test.beforeEach('Deleting created object', async ({ request }) => {
+test.beforeEach('Creating object', async ({ request }) => {
 	let res = await request.post(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
@@ -16,7 +16,7 @@ test.beforeEach('Deleting created object', async ({ request }) => {
 	uuid = await resJson.items[0]._uuid
 })
 
-test('Deleting of reated object user', async ({ request }) => {
+test('Deleting  of created objects', async ({ request }) => {
 	let resDelete = await request.delete(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${API_KEY}`,
