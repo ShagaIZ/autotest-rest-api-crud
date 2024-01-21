@@ -41,67 +41,68 @@ test.afterEach('Deleting created object', async ({ request }) => {
 		data: `[{"_uuid": "${uuidUserTwo}"}]`,
 	})
 })
-test.describe('Geting data of created objects', async()=>{
-test('Geting data of created objects', async ({ request }) => {
-	let res = await request.get(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
+test.describe('Geting data of created objects', async () => {
+	test('Valid url, with token -> get objects data', async ({ request }) => {
+		let res = await request.get(`${urls.main}user`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+		})
+		let resJson = await res.json()
+		await expect(res).toBeOK()
+		await expect(res.status()).toBe(200)
+		await expect(resJson.items[1]).toBeTruthy()
+		await expect(resJson.items[1]._created).toBeTruthy()
+		await expect(resJson.items[1]._data_type).toBeTruthy()
+		await expect(resJson.items[1]._is_deleted).toBe(false)
+		await expect(resJson.items[1]._modified).toBeTruthy()
+		await expect(resJson.items[1]._self_link).toBe(`${urls.base}${urls.main}user/${resJson.items[1]._uuid}`)
+		await expect(resJson.items[1]._user).toBeTruthy()
+		await expect(resJson.items[1]._uuid).toBeTruthy()
+		await expect(resJson.items[1].city).toBe('Moscow')
+		await expect(resJson.items[1].name).toBe('Ivan')
+		await expect(resJson.items[1].age).toBe(25)
+		await expect(resJson.items[0]).toBeTruthy()
+		await expect(resJson.items[0]._created).toBeTruthy()
+		await expect(resJson.items[0]._data_type).toBeTruthy()
+		await expect(resJson.items[0]._is_deleted).toBe(false)
+		await expect(resJson.items[0]._modified).toBeTruthy()
+		await expect(resJson.items[0]._self_link).toBe(`${urls.base}${urls.main}user/${resJson.items[0]._uuid}`)
+		await expect(resJson.items[0]._user).toBeTruthy()
+		await expect(resJson.items[0]._uuid).toBeTruthy()
+		await expect(resJson.items[0].city).toBe('Chicago')
+		await expect(resJson.items[0].name).toBe('Dan')
+		await expect(resJson.items[0].age).toBe(45)
 	})
-	let resJson = await res.json()
-	await expect(res).toBeOK()
-	await expect(res.status()).toBe(200)
-	await expect(resJson.items[1]).toBeTruthy()
-	await expect(resJson.items[1]._created).toBeTruthy()
-	await expect(resJson.items[1]._data_type).toBeTruthy()
-	await expect(resJson.items[1]._is_deleted).toBe(false)
-	await expect(resJson.items[1]._modified).toBeTruthy()
-	await expect(resJson.items[1]._self_link).toBe(`${urls.base}${urls.main}user/${resJson.items[1]._uuid}`)
-	await expect(resJson.items[1]._user).toBeTruthy()
-	await expect(resJson.items[1]._uuid).toBeTruthy()
-	await expect(resJson.items[1].city).toBe('Moscow')
-	await expect(resJson.items[1].name).toBe('Ivan')
-	await expect(resJson.items[1].age).toBe(25)
-	await expect(resJson.items[0]).toBeTruthy()
-	await expect(resJson.items[0]._created).toBeTruthy()
-	await expect(resJson.items[0]._data_type).toBeTruthy()
-	await expect(resJson.items[0]._is_deleted).toBe(false)
-	await expect(resJson.items[0]._modified).toBeTruthy()
-	await expect(resJson.items[0]._self_link).toBe(`${urls.base}${urls.main}user/${resJson.items[0]._uuid}`)
-	await expect(resJson.items[0]._user).toBeTruthy()
-	await expect(resJson.items[0]._uuid).toBeTruthy()
-	await expect(resJson.items[0].city).toBe('Chicago')
-	await expect(resJson.items[0].name).toBe('Dan')
-	await expect(resJson.items[0].age).toBe(45)
-})
 
-test('Geting data of created objects with invaild url', async ({ request }) => {
-	let res = await request.get(`%%%^${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
+	test('Invaild url -> 400 error', async ({ request }) => {
+		let res = await request.get(`%%%^${urls.main}user`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+		})
+		await expect(res.status()).toBe(400)
 	})
-	await expect(res.status()).toBe(400)
-})
 
-test('Geting data of created objects with invaild method', async ({ request }) => {
-	let res = await request.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
+	test('Invaild method -> 400 error', async ({ request }) => {
+		let res = await request.post(`${urls.main}user`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+		})
+		let resJson = await res.json()
+		await expect(resJson.error).toBe('Bad request')
+		await expect(res.status()).toBe(400)
 	})
-	let resJson = await res.json()
-	await expect(resJson.error).toBe('Bad request')
-	await expect(res.status()).toBe(400)
-})
 
-test('Geting data of created objects without token', async ({ request }) => {
-	let res = await request.get(`${urls.main}user`, {
-		headers: {
-			Authorization: ``,
-		},
+	test('Without token -> 400 error', async ({ request }) => {
+		let res = await request.get(`${urls.main}user`, {
+			headers: {
+				Authorization: ``,
+			},
+		})
+		let resJson = await res.json()
+		await expect(resJson.error).toBe('Bad request')
+		await expect(res.status()).toBe(400)
 	})
-	let resJson = await res.json()
-	await expect(resJson.error).toBe('Bad request')
-	await expect(res.status()).toBe(400)
-})})
+})

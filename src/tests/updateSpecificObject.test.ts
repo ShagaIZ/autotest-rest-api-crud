@@ -23,70 +23,70 @@ test.afterEach('Deleting created object', async ({ request }) => {
 		data: `[{"_uuid": "${uuidUser}"}]`,
 	})
 })
-test.describe('Updating specific created object', async()=>{
-test('Updating specific created object', async ({ request }) => {
-	let resUpdatetUser = await request.put(`${urls.main}user/${uuidUser}`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userThree,
+test.describe('Updating specific created object', async () => {
+	test('Valid url and data, with token -> updating specific created object', async ({ request }) => {
+		let resUpdatetUser = await request.put(`${urls.main}user/${uuidUser}`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+			data: dataRequest.userThree,
+		})
+
+		let resUpdateUserJson = await resUpdatetUser.json()
+		await expect(resUpdatetUser).toBeOK()
+		await expect(resUpdatetUser.status()).toBe(200)
+		await expect(resUpdateUserJson).toBeTruthy()
+		await expect(resUpdateUserJson._created).toBeTruthy()
+		await expect(resUpdateUserJson._data_type).toBeTruthy()
+		await expect(resUpdateUserJson._is_deleted).toBe(false)
+		await expect(resUpdateUserJson._modified).toBeTruthy()
+		await expect(resUpdateUserJson._self_link).toBe(`${urls.base}${urls.main}user/${resUpdateUserJson._uuid}`)
+		await expect(resUpdateUserJson._user).toBeTruthy()
+		await expect(resUpdateUserJson._uuid).toBeTruthy()
+		await expect(resUpdateUserJson.city).toBe('Ufa')
+		await expect(resUpdateUserJson.name).toBe('Geran')
+		await expect(resUpdateUserJson.age).toBe(20)
 	})
 
-	let resUpdateUserJson = await resUpdatetUser.json()
-	await expect(resUpdatetUser).toBeOK()
-	await expect(resUpdatetUser.status()).toBe(200)
-	await expect(resUpdateUserJson).toBeTruthy()
-	await expect(resUpdateUserJson._created).toBeTruthy()
-	await expect(resUpdateUserJson._data_type).toBeTruthy()
-	await expect(resUpdateUserJson._is_deleted).toBe(false)
-	await expect(resUpdateUserJson._modified).toBeTruthy()
-	await expect(resUpdateUserJson._self_link).toBe(`${urls.base}${urls.main}user/${resUpdateUserJson._uuid}`)
-	await expect(resUpdateUserJson._user).toBeTruthy()
-	await expect(resUpdateUserJson._uuid).toBeTruthy()
-	await expect(resUpdateUserJson.city).toBe('Ufa')
-	await expect(resUpdateUserJson.name).toBe('Geran')
-	await expect(resUpdateUserJson.age).toBe(20)
-})
-
-test('Updating specific created object with invalid url', async ({ request }) => {
-	let resUpdatetUser = await request.put(`!@!@${urls.main}user/${uuidUser}`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userThree,
+	test('Invalid url -> 404 error', async ({ request }) => {
+		let resUpdatetUser = await request.put(`!@!@${urls.main}user/${uuidUser}`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+			data: dataRequest.userThree,
+		})
+		await expect(resUpdatetUser.status()).toBe(404)
 	})
-	await expect(resUpdatetUser.status()).toBe(404)
-})
 
-test('Updating specific created object with invalid methot', async ({ request }) => {
-	let resUpdatetUser = await request.post(`${urls.main}user/${uuidUser}`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userThree,
+	test('Invalid method -> 405 error', async ({ request }) => {
+		let resUpdatetUser = await request.post(`${urls.main}user/${uuidUser}`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+			data: dataRequest.userThree,
+		})
+		await expect(resUpdatetUser.status()).toBe(405)
 	})
-	await expect(resUpdatetUser.status()).toBe(405)
-})
 
-test('Updating specific created object with invalid uuid', async ({ request }) => {
-	let resUpdatetUser = await request.post(`${urls.main}user/${uuidUser}888`, {
-		headers: {
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		data: dataRequest.userThree,
+	test('Invalid uuid -> 405 error', async ({ request }) => {
+		let resUpdatetUser = await request.post(`${urls.main}user/${uuidUser}888`, {
+			headers: {
+				Authorization: `Bearer ${API_KEY}`,
+			},
+			data: dataRequest.userThree,
+		})
+		await expect(resUpdatetUser.status()).toBe(405)
 	})
-	await expect(resUpdatetUser.status()).toBe(405)
-})
 
-test('Updating specific created object without token', async ({ request }) => {
-	let resUpdatetUser = await request.put(`${urls.main}user/${uuidUser}`, {
-		headers: {
-			Authorization: ``,
-		},
-		data: dataRequest.userThree,
+	test('Without token -> 400 error', async ({ request }) => {
+		let resUpdatetUser = await request.put(`${urls.main}user/${uuidUser}`, {
+			headers: {
+				Authorization: ``,
+			},
+			data: dataRequest.userThree,
+		})
+		let resUpdateUserJson = await resUpdatetUser.json()
+		await expect(resUpdateUserJson.error).toBe('Bad request')
+		await expect(resUpdatetUser.status()).toBe(400)
 	})
-	let resUpdateUserJson = await resUpdatetUser.json()
-	await expect(resUpdateUserJson.error).toBe('Bad request')
-	await expect(resUpdatetUser.status()).toBe(400)
-})
 })
