@@ -23,7 +23,7 @@ test.afterEach('Deleting created object', async ({ request }) => {
 		data: `[{"_uuid": "${uuidUser}"}]`,
 	})
 })
-
+test.describe('Updating specific created object', async()=>{
 test('Updating specific created object', async ({ request }) => {
 	let resUpdatetUser = await request.put(`${urls.main}user/${uuidUser}`, {
 		headers: {
@@ -88,4 +88,5 @@ test('Updating specific created object without token', async ({ request }) => {
 	let resUpdateUserJson = await resUpdatetUser.json()
 	await expect(resUpdateUserJson.error).toBe('Bad request')
 	await expect(resUpdatetUser.status()).toBe(400)
+})
 })

@@ -41,7 +41,7 @@ test.afterEach('Deleting created objects', async ({ request }) => {
 		data: `[{"_uuid": "${uuidUserTwo}"}]`,
 	})
 })
-
+test.describe('Updating created objects', async()=>{
 test('Updating created objects', async ({ request }) => {
 	let resUpdatetUserOne = await request.put(`${urls.main}user`, {
 		headers: {
@@ -128,4 +128,5 @@ test('Updating created objects with invalid method', async ({ request }) => {
 		data: getNewUser(uuidUserOne),
 	})
 	await expect(resUpdatetUserOne.status()).toBe(400)
+})
 })

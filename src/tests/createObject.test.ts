@@ -14,6 +14,7 @@ test.afterEach('Deleting created object', async ({ request }) => {
 	})
 })
 
+test.describe('Creating object', async()=>{
 test('Creating object with valid data and url', async ({ request }) => {
 	let res = await request.post(`${urls.main}user`, {
 		headers: {
@@ -80,4 +81,5 @@ test('Creating object without token', async ({ request }) => {
 	let resJson = await res.json()
 	await expect(resJson.error).toBe('Bad request')
 	await expect(res.status()).toBe(400)
+})
 })

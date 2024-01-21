@@ -24,7 +24,7 @@ test.afterEach('Creating object', async ({ request }) => {
 		data: `[{"_uuid": "${uuid}"}]`,
 	})
 })
-
+test.describe('Deleting specific created object', async()=>{
 test('Deleting specific created object user', async ({ request }) => {
 	let resDelete = await request.delete(`${urls.main}user/${uuid}`, {
 		headers: {
@@ -74,4 +74,5 @@ test('Deleting specific created object without token', async ({ request }) => {
 	let resJson = await resDelete.json()
 	await expect(resJson.error).toBe('Bad request')
 	await expect(resDelete.status()).toBe(400)
+})
 })
