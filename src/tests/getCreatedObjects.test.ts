@@ -47,8 +47,8 @@ test('Geting data of created objects', async({request})=>{
         }
     )
     let resJson = await res.json()
-    uuidUserOne = await resJson.items[0]._uuid
-    uuidUserTwo = await resJson.items[1]._uuid
+    uuidUserOne = await resJson.items[1]._uuid
+    uuidUserTwo = await resJson.items[0]._uuid
     await expect(res).toBeOK()
     await expect(res.status()).toBe(200)
     await expect(resJson.items[1]).toBeTruthy()
