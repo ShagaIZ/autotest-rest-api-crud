@@ -12,7 +12,7 @@ export default defineConfig({
 
 	projects: [
 		{
-			name: 'chromium',
+			name: 'autotest-rest-api-crud',
 			use: { ...devices['Desktop Chrome'] },
 		},
 	],
