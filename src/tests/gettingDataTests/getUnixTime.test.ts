@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
-import { API_KEY } from '../../api_key'
-import { urls } from '../common/urls'
+import { API_KEY } from '../../../api_key'
+import { urls } from '../../common/urls'
 test.describe('Getting unix time', async () => {
 	test('Valid url, with token -> getting unix time', async ({ request }) => {
 		let res = await request.get(urls.probe, {

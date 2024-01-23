@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
-import { API_KEY } from '../../api_key'
-import { urls } from '../common/urls'
-import { dataRequest, getNewUser } from '../common/data'
+import { API_KEY } from '../../../api_key'
+import { urls } from '../../common/urls'
+import { dataRequest, getNewUser } from '../../common/data'
 
 let uuidUserOne: string
 let uuidUserTwo: string
