@@ -8,11 +8,14 @@
 
 
 #### Commands
+**For running tests**
 ```sh
-npm run tests for runung tests
+npm run tests 
 ```
+
+**For formmating code**
 ```sh
-npm run format-code for formmating code
+npm run format-code 
 ```
 
 Hope it helps yours! May the force be with you!
