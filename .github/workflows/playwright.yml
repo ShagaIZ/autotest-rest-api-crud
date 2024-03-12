@@ -18,5 +18,9 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install 
+      - name: Setup api key
+        run: ./api_key.ts
+        env:
+          API_PEY: ${{ secrets.API_KEY }}
       - name: Run tests
         run: npm run tests
