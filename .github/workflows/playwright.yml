@@ -16,7 +16,7 @@ jobs:
          node-version: '20'
       - name: Install dependencies
         run: npm ci
-      - name: Install Playwright Browsers
+      - name: Install chromium 
         run: npx playwright install-deps chromium  
       - name: Run tests
         run: npm run tests
