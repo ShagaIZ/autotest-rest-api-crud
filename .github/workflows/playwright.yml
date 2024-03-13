@@ -4,6 +4,8 @@ on:
     branches: [master]
   # schedule:
   #   - cron: '15 12 * * 1' 
+env:
+  API_KEY: ${{ secrets.API_KEY }}
 jobs:
   container-autotest-job:
     runs-on: ubuntu-latest
@@ -17,10 +19,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers
-        run: npx playwright install 
-      - name: Setup api key
-        run: ./api_key.ts
-        env:
-          API_PEY: ${{ secrets.API_KEY }}
+        run: npx playwright install    
+      - name: Write api_key.json
+        run: |
+           touch api_key.json
+           echo $API_KEY >> api_key.json
+           cat  api_key.json
       - name: Run tests
         run: npm run tests
