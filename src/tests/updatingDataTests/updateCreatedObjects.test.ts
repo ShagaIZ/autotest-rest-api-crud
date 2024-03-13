@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { API_KEY } from '../../../api_key'
+// import { process.env.API_KEY } from '../../../process.env.API_KEY'
 import { urls } from '../../common/urls'
 import { dataRequest, getNewUser } from '../../common/data'
 
@@ -9,13 +9,13 @@ let uuidUserTwo: string
 test.beforeEach('Creating objects', async ({ request }) => {
 	let resCreateUserOne = await request.post(`${urls.main}user`, {
 		headers: {
-			Authorization: `Bearer ${API_KEY}`,
+			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: dataRequest.userOne,
 	})
 	let resCreateUserTwo = await request.post(`${urls.main}user`, {
 		headers: {
-			Authorization: `Bearer ${API_KEY}`,
+			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: dataRequest.userTwo,
 	})
@@ -29,14 +29,14 @@ test.beforeEach('Creating objects', async ({ request }) => {
 test.afterEach('Deleting created objects', async ({ request }) => {
 	await request.delete(`${urls.main}user`, {
 		headers: {
-			Authorization: `Bearer ${API_KEY}`,
+			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: `[{"_uuid": "${uuidUserOne}"}]`,
 	})
 
 	await request.delete(`${urls.main}user`, {
 		headers: {
-			Authorization: `Bearer ${API_KEY}`,
+			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: `[{"_uuid": "${uuidUserTwo}"}]`,
 	})
@@ -45,13 +45,13 @@ test.describe('Updating created objects', async () => {
 	test('Valid url and data, with token -> objects updated', async ({ request }) => {
 		let resUpdatetUserOne = await request.put(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})
 		let resUpdatetUserTwo = await request.put(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserTwo),
 		})
@@ -90,7 +90,7 @@ test.describe('Updating created objects', async () => {
 	test('Invalid url -> 404 error', async ({ request }) => {
 		let resUpdatetUserOne = await request.put(`$$#$#${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})
@@ -101,7 +101,7 @@ test.describe('Updating created objects', async () => {
 	test('Empty data -> 400 error', async ({ request }) => {
 		let resUpdatetUserOne = await request.put(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: '',
 		})
@@ -125,7 +125,7 @@ test.describe('Updating created objects', async () => {
 	test('Invalid method -> 400 error', async ({ request }) => {
 		let resUpdatetUserOne = await request.get(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})

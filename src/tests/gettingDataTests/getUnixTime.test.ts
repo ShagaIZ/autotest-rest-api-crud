@@ -1,11 +1,11 @@
 import { test, expect } from '@playwright/test'
-import { API_KEY } from '../../../api_key'
+// import { process.env.API_KEY } from '../../../process.env.API_KEY'
 import { urls } from '../../common/urls'
 test.describe('Getting unix time', async () => {
 	test('Valid url, with token -> getting unix time', async ({ request }) => {
 		let res = await request.get(urls.probe, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 		})
 		let resJson = await res.json()
@@ -19,7 +19,7 @@ test.describe('Getting unix time', async () => {
 	test('Invalid url -> 400 error', async ({ request }) => {
 		let res = await request.get(`1212${urls.probe}`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 		})
 		await expect(res.status()).toBe(404)
@@ -39,7 +39,7 @@ test.describe('Getting unix time', async () => {
 	test('Invalid method -> 400 error', async ({ request }) => {
 		let res = await request.post(`${urls.probe}`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 		})
 		let resJson = await res.json()
