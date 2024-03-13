@@ -2,8 +2,6 @@ name: autotest-rest-api-crud
 on:
   push:
     branches: [master]
-  # schedule:
-  #   - cron: '15 12 * * 1' 
 env:
   API_KEY: ${{ secrets.API_KEY }}
 jobs:
@@ -15,15 +13,10 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-         node-version: '16'
+         node-version: '20'
       - name: Install dependencies
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install   
-      # - name: Write api_key.json
-      #   run: |
-      #      touch api_key.ts
-      #      echo  ${{ secrets.API_KEY }} >> api_key.ts
-      #      cat  api_key.ts
       - name: Run tests
         run: npm run tests

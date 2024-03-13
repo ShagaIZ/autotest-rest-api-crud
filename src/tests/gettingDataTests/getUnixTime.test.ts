@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test'
-// import { process.env.API_KEY } from '../../../process.env.API_KEY'
 import { urls } from '../../common/urls'
 test.describe('Getting unix time', async () => {
 	test('Valid url, with token -> getting unix time', async ({ request }) => {
