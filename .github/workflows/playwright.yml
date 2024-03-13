@@ -22,8 +22,8 @@ jobs:
         run: npx playwright install    
       - name: Write api_key.json
         run: |
-           touch ./api_key.json
-           echo $API_KEY >> ./api_key.json
-           cat  ./api_key.json
+           touch api_key.json
+           echo $API_KEY >> api_key.json
+           cat  api_key.json
       - name: Run tests
         run: npm run tests
