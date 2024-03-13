@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test'
-// import { process.env.API_KEY } from '../../../process.env.API_KEY'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
 
