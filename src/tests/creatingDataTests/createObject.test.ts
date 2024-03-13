@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test'
-import { API_KEY } from '../../../api_key'
+// import { API_KEY } from '../../../api_key'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
 
@@ -8,7 +8,7 @@ let uuid: string
 test.afterEach('Deleting created object', async ({ request }) => {
 	await request.delete(`${urls.main}user`, {
 		headers: {
-			Authorization: `Bearer ${API_KEY}`,
+			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: `[{"_uuid": "${uuid}"}]`,
 	})
@@ -18,7 +18,7 @@ test.describe('Creating object', async () => {
 	test('Valid url and data, with token -> object created', async ({ request }) => {
 		let res = await request.post(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: dataRequest.userOne,
 		})
@@ -42,7 +42,7 @@ test.describe('Creating object', async () => {
 	test('Invaild url -> 405 error', async ({ request }) => {
 		let res = await request.post(`#@#${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: dataRequest.userOne,
 		})
@@ -52,7 +52,7 @@ test.describe('Creating object', async () => {
 	test('Empty data -> 400 error', async ({ request }) => {
 		let res = await request.post(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: '',
 		})
@@ -64,7 +64,7 @@ test.describe('Creating object', async () => {
 	test('Invalid method -> 400 error ', async ({ request }) => {
 		let res = await request.get(`${urls.main}user`, {
 			headers: {
-				Authorization: `Bearer ${API_KEY}`,
+				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: dataRequest.userOne,
 		})
