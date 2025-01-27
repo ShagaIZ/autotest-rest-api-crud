@@ -1,21 +1,24 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, request } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
 
 let uuid: string
 
-test.afterEach('Deleting created object', async ({ request }) => {
-	await request.delete(`${urls.main}user`, {
+test.afterEach('Deleting created object', async () => {
+	const requestContext = await request.newContext()
+	await requestContext.delete(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: `[{"_uuid": "${uuid}"}]`,
 	})
+	await requestContext.dispose()
 })
 
 test.describe('Creating object', async () => {
-	test('Valid url and data, with token -> object created', async ({ request }) => {
-		let res = await request.post(`${urls.main}user`, {
+	test('Valid url and data, with token -> object created', async () => {
+		const requestContext = await request.newContext()
+		let res = await requestContext.post(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -36,20 +39,24 @@ test.describe('Creating object', async () => {
 		await expect(resJson.items[0].city).toBe('Moscow')
 		await expect(resJson.items[0].name).toBe('Ivan')
 		await expect(resJson.items[0].age).toBe(25)
+		await requestContext.dispose()
 	})
 
-	test('Invaild url -> 405 error', async ({ request }) => {
-		let res = await request.post(`#@#${urls.main}user`, {
+	test('Invaild url -> 405 error', async () => {
+		const requestContext = await request.newContext()
+		let res = await requestContext.post(`#@#${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: dataRequest.userOne,
 		})
 		await expect(res.status()).toBe(405)
+		await requestContext.dispose()
 	})
 
-	test('Empty data -> 400 error', async ({ request }) => {
-		let res = await request.post(`${urls.main}user`, {
+	test('Empty data -> 400 error', async () => {
+		const requestContext = await request.newContext()
+		let res = await requestContext.post(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -58,20 +65,24 @@ test.describe('Creating object', async () => {
 		let resJson = await res.json()
 		await expect(resJson.error).toBe('Bad request')
 		await expect(res.status()).toBe(400)
+		await requestContext.dispose()
 	})
 
-	test('Invalid method -> 400 error ', async ({ request }) => {
-		let res = await request.get(`${urls.main}user`, {
+	test('Invalid method -> 400 error ', async () => {
+		const requestContext = await request.newContext()
+		let res = await requestContext.get(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: dataRequest.userOne,
 		})
 		await expect(res.status()).toBe(400)
+		await requestContext.dispose()
 	})
 
-	test('Without token -> 400 error ', async ({ request }) => {
-		let res = await request.post(`${urls.main}user`, {
+	test('Without token -> 400 error ', async () => {
+		const requestContext = await request.newContext()
+		let res = await requestContext.post(`${urls.main}user`, {
 			headers: {
 				Authorization: ``,
 			},
@@ -80,5 +91,6 @@ test.describe('Creating object', async () => {
 		let resJson = await res.json()
 		await expect(resJson.error).toBe('Bad request')
 		await expect(res.status()).toBe(400)
+		await requestContext.dispose()
 	})
 })

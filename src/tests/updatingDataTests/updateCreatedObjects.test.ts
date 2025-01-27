@@ -1,61 +1,73 @@
-import { test, expect } from '@playwright/test'
+import { test, expect, request } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest, getNewUser } from '../../common/data'
 
 let uuidUserOne: string
 let uuidUserTwo: string
 
-test.beforeEach('Creating objects', async ({ request }) => {
-	let resCreateUserOne = await request.post(`${urls.main}user`, {
+test.beforeEach('Creating object', async () => {
+	const requestContextCreateUserOne = await request.newContext()
+	let resCreateUserOne = await requestContextCreateUserOne.post(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: dataRequest.userOne,
 	})
-	let resCreateUserTwo = await request.post(`${urls.main}user`, {
+	let resjsonCreateUserOne = await resCreateUserOne.json()
+	await requestContextCreateUserOne.dispose()
+	const requestContextCreateUserTwo = await request.newContext()
+	let resCreateUserTwo = await requestContextCreateUserTwo.post(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: dataRequest.userTwo,
 	})
-
-	let resjsonCreateUserOne = await resCreateUserOne.json()
 	let resjsonCreateUserTwo = await resCreateUserTwo.json()
+	await requestContextCreateUserTwo.dispose()
+
 	uuidUserOne = await resjsonCreateUserOne.items[0]._uuid
 	uuidUserTwo = await resjsonCreateUserTwo.items[0]._uuid
 })
 
-test.afterEach('Deleting created objects', async ({ request }) => {
-	await request.delete(`${urls.main}user`, {
+test.afterEach('Deleting created object', async () => {
+	const requestContextDeleteUserOne = await request.newContext()
+	await requestContextDeleteUserOne.delete(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: `[{"_uuid": "${uuidUserOne}"}]`,
 	})
-
-	await request.delete(`${urls.main}user`, {
+	await requestContextDeleteUserOne.dispose()
+	const requestContextDeleteUserTwo = await request.newContext()
+	await requestContextDeleteUserTwo.delete(`${urls.main}user`, {
 		headers: {
 			Authorization: `Bearer ${process.env.API_KEY}`,
 		},
 		data: `[{"_uuid": "${uuidUserTwo}"}]`,
 	})
+	await requestContextDeleteUserTwo.dispose()
 })
 test.describe('Updating created objects', async () => {
-	test('Valid url and data, with token -> objects updated', async ({ request }) => {
-		let resUpdatetUserOne = await request.put(`${urls.main}user`, {
+	test('Valid url and data, with token -> objects updated', async () => {
+		const requestContextUpdatetUserOne = await request.newContext()
+		let resUpdatetUserOne = await requestContextUpdatetUserOne.put(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})
-		let resUpdatetUserTwo = await request.put(`${urls.main}user`, {
+		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
+		await requestContextUpdatetUserOne.dispose()
+		const requestContextUpdatetUserTwo = await request.newContext()
+		let resUpdatetUserTwo = await requestContextUpdatetUserTwo.put(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserTwo),
 		})
-		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
 		let resUpdatetUserTwoJson = await resUpdatetUserTwo.json()
+		await requestContextUpdatetUserTwo.dispose()
+
 		//First block assertation
 		await expect(resUpdatetUserOne).toBeOK()
 		await expect(resUpdatetUserOne.status()).toBe(200)
@@ -86,8 +98,9 @@ test.describe('Updating created objects', async () => {
 		await expect(resUpdatetUserTwoJson.items[0].age).toBe(35)
 	})
 
-	test('Invalid url -> 404 error', async ({ request }) => {
-		let resUpdatetUserOne = await request.put(`$$#$#${urls.main}user`, {
+	test('Invalid url -> 404 error', async () => {
+		const requestContext = await request.newContext()
+		let resUpdatetUserOne = await requestContext.put(`$$#$#${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -95,10 +108,12 @@ test.describe('Updating created objects', async () => {
 		})
 
 		await expect(resUpdatetUserOne.status()).toBe(404)
+		await requestContext.dispose()
 	})
 
-	test('Empty data -> 400 error', async ({ request }) => {
-		let resUpdatetUserOne = await request.put(`${urls.main}user`, {
+	test('Empty data -> 400 error', async () => {
+		const requestContext = await request.newContext()
+		let resUpdatetUserOne = await requestContext.put(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -107,10 +122,12 @@ test.describe('Updating created objects', async () => {
 		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
 		await expect(resUpdatetUserOneJson.error).toBe('Bad request')
 		await expect(resUpdatetUserOne.status()).toBe(400)
+		await requestContext.dispose()
 	})
 
-	test('Without token -> 400 error', async ({ request }) => {
-		let resUpdatetUserOne = await request.put(`${urls.main}user`, {
+	test('Without token -> 400 error', async () => {
+		const requestContext = await request.newContext()
+		let resUpdatetUserOne = await requestContext.put(`${urls.main}user`, {
 			headers: {
 				Authorization: ``,
 			},
@@ -119,15 +136,18 @@ test.describe('Updating created objects', async () => {
 		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
 		await expect(resUpdatetUserOneJson.error).toBe('Bad request')
 		await expect(resUpdatetUserOne.status()).toBe(400)
+		await requestContext.dispose()
 	})
 
-	test('Invalid method -> 400 error', async ({ request }) => {
-		let resUpdatetUserOne = await request.get(`${urls.main}user`, {
+	test('Invalid method -> 400 error', async () => {
+		const requestContext = await request.newContext()
+		let resUpdatetUserOne = await requestContext.get(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})
 		await expect(resUpdatetUserOne.status()).toBe(400)
+		await requestContext.dispose()
 	})
 })
