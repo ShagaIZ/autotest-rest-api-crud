@@ -1,4 +1,4 @@
-import { test, expect, request } from '@playwright/test'
+import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
 
@@ -13,7 +13,7 @@ test.beforeEach('Creating object', async () => {
 		},
 		data: dataRequest.userOne,
 	})
-	let resjsonCreateUserOne = await resCreateUserOne.json()
+	uuidUserOne = await (await resCreateUserOne.json()).items[0]._uuid
 	await requestContextCreateUserOne.dispose()
 	const requestContextCreateUserTwo = await request.newContext()
 	let resCreateUserTwo = await requestContextCreateUserTwo.post(`${urls.main}user`, {
@@ -22,11 +22,11 @@ test.beforeEach('Creating object', async () => {
 		},
 		data: dataRequest.userTwo,
 	})
-	let resjsonCreateUserTwo = await resCreateUserTwo.json()
+	uuidUserTwo = await (await resCreateUserTwo.json()).items[0]._uuid
 	await requestContextCreateUserTwo.dispose()
 
-	uuidUserOne = await resjsonCreateUserOne.items[0]._uuid
-	uuidUserTwo = await resjsonCreateUserTwo.items[0]._uuid
+	
+	
 })
 
 test.afterEach('Deleting created object', async () => {
@@ -56,8 +56,8 @@ test.describe('Deleting objects', async () => {
 			},
 			data: `[{"_uuid": "${uuidUserOne}"}]`,
 		})
-		let resDeleteUserOneJson = await resDeleteUserOne.json()
-		await requestContextDeleteUserOne.dispose()
+		
+	
 		const requestContextDeleteUserTwo = await request.newContext()
 		let resDeleteUserTwo = await requestContextDeleteUserTwo.delete(`${urls.main}user`, {
 			headers: {
@@ -65,37 +65,38 @@ test.describe('Deleting objects', async () => {
 			},
 			data: `[{"_uuid": "${uuidUserTwo}"}]`,
 		})
-		let resDeleteUserTwoJson = await resDeleteUserTwo.json()
-		await requestContextDeleteUserTwo.dispose()
+	
 
 		//First block assertation
 		await expect(resDeleteUserOne).toBeOK()
 		await expect(resDeleteUserOne.status()).toBe(200)
-		await expect(resDeleteUserOneJson.items[0]).toBeTruthy()
-		await expect(resDeleteUserOneJson.items[0]._created).toBeTruthy()
-		await expect(resDeleteUserOneJson.items[0]._data_type).toBeTruthy()
-		await expect(resDeleteUserOneJson.items[0]._is_deleted).toBe(true)
-		await expect(resDeleteUserOneJson.items[0]._modified).toBeTruthy()
-		await expect(resDeleteUserOneJson.items[0]._self_link).toBe(`${urls.base}${urls.main}user/${resDeleteUserOneJson.items[0]._uuid}`)
-		await expect(resDeleteUserOneJson.items[0]._user).toBeTruthy()
-		await expect(resDeleteUserOneJson.items[0]._uuid).toBeTruthy()
-		await expect(resDeleteUserOneJson.items[0].city).toBe('Moscow')
-		await expect(resDeleteUserOneJson.items[0].name).toBe('Ivan')
-		await expect(resDeleteUserOneJson.items[0].age).toBe(25)
+		await expect((await resDeleteUserOne.json()).items[0]).toBeTruthy()
+		await expect((await resDeleteUserOne.json()).items[0]._created).toBeTruthy()
+		await expect((await resDeleteUserOne.json()).items[0]._data_type).toBeTruthy()
+		await expect((await resDeleteUserOne.json()).items[0]._is_deleted).toBe(true)
+		await expect((await resDeleteUserOne.json()).items[0]._modified).toBeTruthy()
+		await expect((await resDeleteUserOne.json()).items[0]._self_link).toBe(`${urls.base}${urls.main}user/${(await resDeleteUserOne.json()).items[0]._uuid}`)
+		await expect((await resDeleteUserOne.json()).items[0]._user).toBeTruthy()
+		await expect((await resDeleteUserOne.json()).items[0]._uuid).toBeTruthy()
+		await expect((await resDeleteUserOne.json()).items[0].city).toBe('Moscow')
+		await expect((await resDeleteUserOne.json()).items[0].name).toBe('Ivan')
+		await expect((await resDeleteUserOne.json()).items[0].age).toBe(25)
 		//Second block assertation
 		await expect(resDeleteUserTwo).toBeOK()
 		await expect(resDeleteUserTwo.status()).toBe(200)
-		await expect(resDeleteUserTwoJson.items[0]).toBeTruthy()
-		await expect(resDeleteUserTwoJson.items[0]._created).toBeTruthy()
-		await expect(resDeleteUserTwoJson.items[0]._data_type).toBeTruthy()
-		await expect(resDeleteUserTwoJson.items[0]._is_deleted).toBe(true)
-		await expect(resDeleteUserTwoJson.items[0]._modified).toBeTruthy()
-		await expect(resDeleteUserTwoJson.items[0]._self_link).toBe(`${urls.base}${urls.main}user/${resDeleteUserTwoJson.items[0]._uuid}`)
-		await expect(resDeleteUserTwoJson.items[0]._user).toBeTruthy()
-		await expect(resDeleteUserTwoJson.items[0]._uuid).toBeTruthy()
-		await expect(resDeleteUserTwoJson.items[0].city).toBe('Chicago')
-		await expect(resDeleteUserTwoJson.items[0].name).toBe('Dan')
-		await expect(resDeleteUserTwoJson.items[0].age).toBe(45)
+		await expect((await resDeleteUserTwo.json()).items[0]).toBeTruthy()
+		await expect((await resDeleteUserTwo.json()).items[0]._created).toBeTruthy()
+		await expect((await resDeleteUserTwo.json()).items[0]._data_type).toBeTruthy()
+		await expect((await resDeleteUserTwo.json()).items[0]._is_deleted).toBe(true)
+		await expect((await resDeleteUserTwo.json()).items[0]._modified).toBeTruthy()
+		await expect((await resDeleteUserTwo.json()).items[0]._self_link).toBe(`${urls.base}${urls.main}user/${(await resDeleteUserTwo.json()).items[0]._uuid}`)
+		await expect((await resDeleteUserTwo.json()).items[0]._user).toBeTruthy()
+		await expect((await resDeleteUserTwo.json()).items[0]._uuid).toBeTruthy()
+		await expect((await resDeleteUserTwo.json()).items[0].city).toBe('Chicago')
+		await expect((await resDeleteUserTwo.json()).items[0].name).toBe('Dan')
+		await expect((await resDeleteUserTwo.json()).items[0].age).toBe(45)
+		await requestContextDeleteUserOne.dispose()
+		await requestContextDeleteUserTwo.dispose()
 	})
 
 	test('Invaild url -> 404 error', async () => {
@@ -112,41 +113,40 @@ test.describe('Deleting objects', async () => {
 
 	test('Empty data -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let resDelete = await requestContext.delete(`${urls.main}user`, {
+		let response: APIResponse = await requestContext.delete(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: ``,
 		})
-		let resJson = await resDelete.json()
-		await expect(resJson.error).toBe('Bad request')
-		await expect(resDelete.status()).toBe(400)
+		await expect((await response.json()).error).toBe('Bad request')
+		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
 	})
 
 	test('Invalid method -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let resDelete = await requestContext.get(`${urls.main}user`, {
+		let response: APIResponse = await requestContext.get(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: `[{"_uuid": "${uuidUserTwo}"}]`,
 		})
-		await expect(resDelete.status()).toBe(400)
+		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
 	})
 
 	test('Without token -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let resDelete = await requestContext.delete(`${urls.main}user`, {
+		let response: APIResponse = await requestContext.delete(`${urls.main}user`, {
 			headers: {
 				Authorization: ``,
 			},
 			data: `[{"_uuid": "${uuidUserOne}"}]`,
 		})
-		let resJson = await resDelete.json()
-		await expect(resJson.error).toBe('Bad request')
-		await expect(resDelete.status()).toBe(400)
+		
+		await expect((await response.json()).error).toBe('Bad request')
+		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
 	})
 })
