@@ -1,4 +1,4 @@
-import { test, expect, request } from '@playwright/test'
+import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest, getNewUser } from '../../common/data'
 
@@ -13,7 +13,7 @@ test.beforeEach('Creating object', async () => {
 		},
 		data: dataRequest.userOne,
 	})
-	let resjsonCreateUserOne = await resCreateUserOne.json()
+	uuidUserOne = await (await resCreateUserOne.json()).items[0]._uuid
 	await requestContextCreateUserOne.dispose()
 	const requestContextCreateUserTwo = await request.newContext()
 	let resCreateUserTwo = await requestContextCreateUserTwo.post(`${urls.main}user`, {
@@ -22,11 +22,8 @@ test.beforeEach('Creating object', async () => {
 		},
 		data: dataRequest.userTwo,
 	})
-	let resjsonCreateUserTwo = await resCreateUserTwo.json()
+	uuidUserTwo = await (await resCreateUserTwo.json()).items[0]._uuid
 	await requestContextCreateUserTwo.dispose()
-
-	uuidUserOne = await resjsonCreateUserOne.items[0]._uuid
-	uuidUserTwo = await resjsonCreateUserTwo.items[0]._uuid
 })
 
 test.afterEach('Deleting created object', async () => {
@@ -56,8 +53,7 @@ test.describe('Updating created objects', async () => {
 			},
 			data: getNewUser(uuidUserOne),
 		})
-		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
-		await requestContextUpdatetUserOne.dispose()
+
 		const requestContextUpdatetUserTwo = await request.newContext()
 		let resUpdatetUserTwo = await requestContextUpdatetUserTwo.put(`${urls.main}user`, {
 			headers: {
@@ -65,89 +61,90 @@ test.describe('Updating created objects', async () => {
 			},
 			data: getNewUser(uuidUserTwo),
 		})
-		let resUpdatetUserTwoJson = await resUpdatetUserTwo.json()
-		await requestContextUpdatetUserTwo.dispose()
-
 		//First block assertation
 		await expect(resUpdatetUserOne).toBeOK()
 		await expect(resUpdatetUserOne.status()).toBe(200)
-		await expect(resUpdatetUserOneJson.items[0]).toBeTruthy()
-		await expect(resUpdatetUserOneJson.items[0]._created).toBeTruthy()
-		await expect(resUpdatetUserOneJson.items[0]._data_type).toBeTruthy()
-		await expect(resUpdatetUserOneJson.items[0]._is_deleted).toBe(false)
-		await expect(resUpdatetUserOneJson.items[0]._modified).toBeTruthy()
-		await expect(resUpdatetUserOneJson.items[0]._self_link).toBe(`${urls.base}${urls.main}user/${resUpdatetUserOneJson.items[0]._uuid}`)
-		await expect(resUpdatetUserOneJson.items[0]._user).toBeTruthy()
-		await expect(resUpdatetUserOneJson.items[0]._uuid).toBeTruthy()
-		await expect(resUpdatetUserOneJson.items[0].city).toBe('London')
-		await expect(resUpdatetUserOneJson.items[0].name).toBe('Roman')
-		await expect(resUpdatetUserOneJson.items[0].age).toBe(35)
+		await expect((await resUpdatetUserOne.json()).items[0]).toBeTruthy()
+		await expect((await resUpdatetUserOne.json()).items[0]._created).toBeTruthy()
+		await expect((await resUpdatetUserOne.json()).items[0]._data_type).toBeTruthy()
+		await expect((await resUpdatetUserOne.json()).items[0]._is_deleted).toBe(false)
+		await expect((await resUpdatetUserOne.json()).items[0]._modified).toBeTruthy()
+		await expect((await resUpdatetUserOne.json()).items[0]._self_link).toBe(
+			`${urls.base}${urls.main}user/${(await resUpdatetUserOne.json()).items[0]._uuid}`
+		)
+		await expect((await resUpdatetUserOne.json()).items[0]._user).toBeTruthy()
+		await expect((await resUpdatetUserOne.json()).items[0]._uuid).toBeTruthy()
+		await expect((await resUpdatetUserOne.json()).items[0].city).toBe('London')
+		await expect((await resUpdatetUserOne.json()).items[0].name).toBe('Roman')
+		await expect((await resUpdatetUserOne.json()).items[0].age).toBe(35)
 		//Second block assertation
 		await expect(resUpdatetUserTwo).toBeOK()
 		await expect(resUpdatetUserTwo.status()).toBe(200)
-		await expect(resUpdatetUserTwoJson.items[0]).toBeTruthy()
-		await expect(resUpdatetUserTwoJson.items[0]._created).toBeTruthy()
-		await expect(resUpdatetUserTwoJson.items[0]._data_type).toBeTruthy()
-		await expect(resUpdatetUserTwoJson.items[0]._is_deleted).toBe(false)
-		await expect(resUpdatetUserTwoJson.items[0]._modified).toBeTruthy()
-		await expect(resUpdatetUserTwoJson.items[0]._self_link).toBe(`${urls.base}${urls.main}user/${resUpdatetUserTwoJson.items[0]._uuid}`)
-		await expect(resUpdatetUserTwoJson.items[0]._user).toBeTruthy()
-		await expect(resUpdatetUserTwoJson.items[0]._uuid).toBeTruthy()
-		await expect(resUpdatetUserTwoJson.items[0].city).toBe('London')
-		await expect(resUpdatetUserTwoJson.items[0].name).toBe('Roman')
-		await expect(resUpdatetUserTwoJson.items[0].age).toBe(35)
+		await expect((await resUpdatetUserTwo.json()).items[0]).toBeTruthy()
+		await expect((await resUpdatetUserTwo.json()).items[0]._created).toBeTruthy()
+		await expect((await resUpdatetUserTwo.json()).items[0]._data_type).toBeTruthy()
+		await expect((await resUpdatetUserTwo.json()).items[0]._is_deleted).toBe(false)
+		await expect((await resUpdatetUserTwo.json()).items[0]._modified).toBeTruthy()
+		await expect((await resUpdatetUserTwo.json()).items[0]._self_link).toBe(
+			`${urls.base}${urls.main}user/${(await resUpdatetUserTwo.json()).items[0]._uuid}`
+		)
+		await expect((await resUpdatetUserTwo.json()).items[0]._user).toBeTruthy()
+		await expect((await resUpdatetUserTwo.json()).items[0]._uuid).toBeTruthy()
+		await expect((await resUpdatetUserTwo.json()).items[0].city).toBe('London')
+		await expect((await resUpdatetUserTwo.json()).items[0].name).toBe('Roman')
+		await expect((await resUpdatetUserTwo.json()).items[0].age).toBe(35)
+		await requestContextUpdatetUserOne.dispose()
+		await requestContextUpdatetUserTwo.dispose()
 	})
 
 	test('Invalid url -> 404 error', async () => {
 		const requestContext = await request.newContext()
-		let resUpdatetUserOne = await requestContext.put(`$$#$#${urls.main}user`, {
+		let response: APIResponse = await requestContext.put(`$$#$#${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})
 
-		await expect(resUpdatetUserOne.status()).toBe(404)
+		await expect(response.status()).toBe(404)
 		await requestContext.dispose()
 	})
 
 	test('Empty data -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let resUpdatetUserOne = await requestContext.put(`${urls.main}user`, {
+		let response: APIResponse = await requestContext.put(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: '',
 		})
-		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
-		await expect(resUpdatetUserOneJson.error).toBe('Bad request')
-		await expect(resUpdatetUserOne.status()).toBe(400)
+		await expect((await response.json()).error).toBe('Bad request')
+		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
 	})
 
 	test('Without token -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let resUpdatetUserOne = await requestContext.put(`${urls.main}user`, {
+		let response: APIResponse = await requestContext.put(`${urls.main}user`, {
 			headers: {
 				Authorization: ``,
 			},
 			data: getNewUser(uuidUserOne),
 		})
-		let resUpdatetUserOneJson = await resUpdatetUserOne.json()
-		await expect(resUpdatetUserOneJson.error).toBe('Bad request')
-		await expect(resUpdatetUserOne.status()).toBe(400)
+		await expect((await response.json()).error).toBe('Bad request')
+		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
 	})
 
 	test('Invalid method -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let resUpdatetUserOne = await requestContext.get(`${urls.main}user`, {
+		let response: APIResponse = await requestContext.get(`${urls.main}user`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
 			data: getNewUser(uuidUserOne),
 		})
-		await expect(resUpdatetUserOne.status()).toBe(400)
+		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
 	})
 })
