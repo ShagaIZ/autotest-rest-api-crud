@@ -61,7 +61,7 @@ test.describe('Creating object', async () => {
 			},
 			data: '',
 		})
-	
+
 		await expect((await response.json()).error).toBe('Bad request')
 		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
@@ -87,7 +87,7 @@ test.describe('Creating object', async () => {
 			},
 			data: dataRequest.userOne,
 		})
-	
+
 		await expect((await response.json()).error).toBe('Bad request')
 		await expect(response.status()).toBe(400)
 		await requestContext.dispose()

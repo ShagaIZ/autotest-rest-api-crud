@@ -24,9 +24,6 @@ test.beforeEach('Creating object', async () => {
 	})
 	uuidUserTwo = await (await resCreateUserTwo.json()).items[0]._uuid
 	await requestContextCreateUserTwo.dispose()
-
-	
-	
 })
 
 test.afterEach('Deleting created object', async () => {
@@ -56,7 +53,7 @@ test.describe('Updating created objects', async () => {
 			},
 			data: getNewUser(uuidUserOne),
 		})
-		
+
 		const requestContextUpdatetUserTwo = await request.newContext()
 		let resUpdatetUserTwo = await requestContextUpdatetUserTwo.put(`${urls.main}user`, {
 			headers: {
@@ -72,7 +69,9 @@ test.describe('Updating created objects', async () => {
 		await expect((await resUpdatetUserOne.json()).items[0]._data_type).toBeTruthy()
 		await expect((await resUpdatetUserOne.json()).items[0]._is_deleted).toBe(false)
 		await expect((await resUpdatetUserOne.json()).items[0]._modified).toBeTruthy()
-		await expect((await resUpdatetUserOne.json()).items[0]._self_link).toBe(`${urls.base}${urls.main}user/${(await resUpdatetUserOne.json()).items[0]._uuid}`)
+		await expect((await resUpdatetUserOne.json()).items[0]._self_link).toBe(
+			`${urls.base}${urls.main}user/${(await resUpdatetUserOne.json()).items[0]._uuid}`
+		)
 		await expect((await resUpdatetUserOne.json()).items[0]._user).toBeTruthy()
 		await expect((await resUpdatetUserOne.json()).items[0]._uuid).toBeTruthy()
 		await expect((await resUpdatetUserOne.json()).items[0].city).toBe('London')
@@ -86,7 +85,9 @@ test.describe('Updating created objects', async () => {
 		await expect((await resUpdatetUserTwo.json()).items[0]._data_type).toBeTruthy()
 		await expect((await resUpdatetUserTwo.json()).items[0]._is_deleted).toBe(false)
 		await expect((await resUpdatetUserTwo.json()).items[0]._modified).toBeTruthy()
-		await expect((await resUpdatetUserTwo.json()).items[0]._self_link).toBe(`${urls.base}${urls.main}user/${(await resUpdatetUserTwo.json()).items[0]._uuid}`)
+		await expect((await resUpdatetUserTwo.json()).items[0]._self_link).toBe(
+			`${urls.base}${urls.main}user/${(await resUpdatetUserTwo.json()).items[0]._uuid}`
+		)
 		await expect((await resUpdatetUserTwo.json()).items[0]._user).toBeTruthy()
 		await expect((await resUpdatetUserTwo.json()).items[0]._uuid).toBeTruthy()
 		await expect((await resUpdatetUserTwo.json()).items[0].city).toBe('London')

@@ -24,9 +24,6 @@ test.beforeEach('Creating object', async () => {
 	})
 	uuidUserTwo = await (await resCreateUserTwo.json()).items[0]._uuid
 	await requestContextCreateUserTwo.dispose()
-
-	
-	
 })
 
 test.afterEach('Deleting created object', async () => {

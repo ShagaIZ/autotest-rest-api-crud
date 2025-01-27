@@ -35,7 +35,7 @@ test.describe('Updating specific created object', async () => {
 		})
 		await expect(response).toBeOK()
 		await expect(response.status()).toBe(200)
-		await expect((await response.json())).toBeTruthy()
+		await expect(await response.json()).toBeTruthy()
 		await expect((await response.json())._created).toBeTruthy()
 		await expect((await response.json())._data_type).toBeTruthy()
 		await expect((await response.json())._is_deleted).toBe(false)

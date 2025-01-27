@@ -24,9 +24,6 @@ test.beforeEach('Creating object', async () => {
 	})
 	uuidUserTwo = await (await resCreateUserTwo.json()).items[0]._uuid
 	await requestContextCreateUserTwo.dispose()
-
-	
-	
 })
 
 test.afterEach('Deleting created object', async () => {
@@ -56,8 +53,7 @@ test.describe('Deleting objects', async () => {
 			},
 			data: `[{"_uuid": "${uuidUserOne}"}]`,
 		})
-		
-	
+
 		const requestContextDeleteUserTwo = await request.newContext()
 		let resDeleteUserTwo = await requestContextDeleteUserTwo.delete(`${urls.main}user`, {
 			headers: {
@@ -65,7 +61,6 @@ test.describe('Deleting objects', async () => {
 			},
 			data: `[{"_uuid": "${uuidUserTwo}"}]`,
 		})
-	
 
 		//First block assertation
 		await expect(resDeleteUserOne).toBeOK()
@@ -75,7 +70,9 @@ test.describe('Deleting objects', async () => {
 		await expect((await resDeleteUserOne.json()).items[0]._data_type).toBeTruthy()
 		await expect((await resDeleteUserOne.json()).items[0]._is_deleted).toBe(true)
 		await expect((await resDeleteUserOne.json()).items[0]._modified).toBeTruthy()
-		await expect((await resDeleteUserOne.json()).items[0]._self_link).toBe(`${urls.base}${urls.main}user/${(await resDeleteUserOne.json()).items[0]._uuid}`)
+		await expect((await resDeleteUserOne.json()).items[0]._self_link).toBe(
+			`${urls.base}${urls.main}user/${(await resDeleteUserOne.json()).items[0]._uuid}`
+		)
 		await expect((await resDeleteUserOne.json()).items[0]._user).toBeTruthy()
 		await expect((await resDeleteUserOne.json()).items[0]._uuid).toBeTruthy()
 		await expect((await resDeleteUserOne.json()).items[0].city).toBe('Moscow')
@@ -89,7 +86,9 @@ test.describe('Deleting objects', async () => {
 		await expect((await resDeleteUserTwo.json()).items[0]._data_type).toBeTruthy()
 		await expect((await resDeleteUserTwo.json()).items[0]._is_deleted).toBe(true)
 		await expect((await resDeleteUserTwo.json()).items[0]._modified).toBeTruthy()
-		await expect((await resDeleteUserTwo.json()).items[0]._self_link).toBe(`${urls.base}${urls.main}user/${(await resDeleteUserTwo.json()).items[0]._uuid}`)
+		await expect((await resDeleteUserTwo.json()).items[0]._self_link).toBe(
+			`${urls.base}${urls.main}user/${(await resDeleteUserTwo.json()).items[0]._uuid}`
+		)
 		await expect((await resDeleteUserTwo.json()).items[0]._user).toBeTruthy()
 		await expect((await resDeleteUserTwo.json()).items[0]._uuid).toBeTruthy()
 		await expect((await resDeleteUserTwo.json()).items[0].city).toBe('Chicago')
@@ -144,7 +143,7 @@ test.describe('Deleting objects', async () => {
 			},
 			data: `[{"_uuid": "${uuidUserOne}"}]`,
 		})
-		
+
 		await expect((await response.json()).error).toBe('Bad request')
 		await expect(response.status()).toBe(400)
 		await requestContext.dispose()
