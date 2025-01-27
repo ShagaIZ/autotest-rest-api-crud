@@ -5,7 +5,7 @@
 	"main": "index.js",
 	"scripts": {
 		"tests": "npx playwright test",
-		"tests:local":"dotenv -e .env.local playwright test",
+		"tests:local": "dotenv -e .env.local playwright test",
 		"format-code": "npx prettier . --write"
 	},
 	"keywords": [],
@@ -19,6 +19,5 @@
 	"dependencies": {
 		"dotenv": "10.0.0",
 		"dotenv-cli": "4.1.1"
-	  }
-	
+	}
 }
