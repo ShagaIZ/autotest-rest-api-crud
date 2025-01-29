@@ -4,7 +4,7 @@ import { dataRequest } from '../../common/data'
 
 let uuidUserTwo: string
 
-test.beforeEach('Deleting created object', async () => {
+test.beforeEach('Creating object', async () => {
 	const requestContext = await request.newContext()
 	let response: APIResponse = await requestContext.post(`${urls.main}user`, {
 		headers: {
@@ -44,8 +44,8 @@ test.describe('Geting data of specific created object', async () => {
 		await expect((await response.json())._self_link).toBe(`${urls.base}${urls.main}user/${(await response.json())._uuid}`)
 		await expect((await response.json())._user).toBeTruthy()
 		await expect((await response.json())._uuid).toBeTruthy()
-		await expect((await response.json()).city).toBe('Chicago')
-		await expect((await response.json()).name).toBe('Dan')
+		await expect((await response.json()).city).toBe(JSON.parse(dataRequest.userTwo)[0].city)
+		await expect((await response.json()).name).toBe(JSON.parse(dataRequest.userTwo)[0].name)
 		await expect((await response.json()).age).toBe(45)
 		await requestContext.dispose()
 	})
