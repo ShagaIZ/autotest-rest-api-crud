@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test'
 export default defineConfig({
 	testDir: 'src/',
 	retries: 1,
-	workers: 6,
+	workers: 2,
 	reporter: process.env.CI ? 'list' : 'html',
 	use: {
 		baseURL: 'https://crudapi.co.uk',
