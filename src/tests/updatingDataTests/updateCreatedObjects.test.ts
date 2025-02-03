@@ -1,48 +1,19 @@
 import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest, getNewUser } from '../../common/data'
+import { createApiBase } from '../../common/apiBase'
 
 let uuidUserOne: string
 let uuidUserTwo: string
 
 test.beforeEach('Creating object', async () => {
-	const requestContextCreateUserOne = await request.newContext()
-	let resCreateUserOne = await requestContextCreateUserOne.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: dataRequest.userOne,
-	})
-	uuidUserOne = await (await resCreateUserOne.json()).items[0]._uuid
-	await requestContextCreateUserOne.dispose()
-	const requestContextCreateUserTwo = await request.newContext()
-	let resCreateUserTwo = await requestContextCreateUserTwo.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: dataRequest.userTwo,
-	})
-	uuidUserTwo = await (await resCreateUserTwo.json()).items[0]._uuid
-	await requestContextCreateUserTwo.dispose()
+	uuidUserOne = await (await createApiBase()).createObject(dataRequest.userOne)
+	uuidUserTwo = await (await createApiBase()).createObject(dataRequest.userTwo)
 })
 
 test.afterEach('Deleting created object', async () => {
-	const requestContextDeleteUserOne = await request.newContext()
-	await requestContextDeleteUserOne.delete(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: `[{"_uuid": "${uuidUserOne}"}]`,
-	})
-	await requestContextDeleteUserOne.dispose()
-	const requestContextDeleteUserTwo = await request.newContext()
-	await requestContextDeleteUserTwo.delete(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: `[{"_uuid": "${uuidUserTwo}"}]`,
-	})
-	await requestContextDeleteUserTwo.dispose()
+	await (await createApiBase()).deleteObject(uuidUserOne)
+	await (await createApiBase()).deleteObject(uuidUserTwo)
 })
 test.describe('Updating created objects', async () => {
 	test('Valid url and data, with token -> objects updated', async () => {

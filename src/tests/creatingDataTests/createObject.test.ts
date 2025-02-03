@@ -1,18 +1,11 @@
 import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
-
+import { createApiBase } from '../../common/apiBase'
 let uuid: string
 
 test.afterEach('Deleting created object', async () => {
-	const requestContext = await request.newContext()
-	await requestContext.delete(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: `[{"_uuid": "${uuid}"}]`,
-	})
-	await requestContext.dispose()
+	await (await createApiBase()).deleteObject(uuid)
 })
 
 test.describe('Creating object', async () => {
