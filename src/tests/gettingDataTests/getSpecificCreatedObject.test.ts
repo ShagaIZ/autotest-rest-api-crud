@@ -1,30 +1,16 @@
 import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
+import { createApiBase } from '../../common/apiBase'
 
 let uuidUserTwo: string
 
 test.beforeEach('Creating object', async () => {
-	const requestContext = await request.newContext()
-	let response: APIResponse = await requestContext.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: dataRequest.userTwo,
-	})
-	uuidUserTwo = await (await response.json()).items[0]._uuid
-	await requestContext.dispose()
+	uuidUserTwo = await (await createApiBase()).createObject(dataRequest.userTwo)
 })
 
 test.afterEach('Deleting created object', async () => {
-	const requestContext = await request.newContext()
-	await requestContext.delete(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: `[{"_uuid": "${uuidUserTwo}"}]`,
-	})
-	await requestContext.dispose()
+	await (await createApiBase()).deleteObject(uuidUserTwo)
 })
 test.describe('Geting data of specific created object', async () => {
 	test('Valid url, with token -> get specific object data', async () => {

@@ -1,35 +1,19 @@
 import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
+import { createApiBase } from '../../common/apiBase'
 
-let uuid: string
-
-test.beforeEach('Deleting created object', async () => {
-	const requestContext = await request.newContext()
-	let response: APIResponse = await requestContext.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: dataRequest.userOne,
-	})
-	uuid = await (await response.json()).items[0]._uuid
-	await requestContext.dispose()
+let uuidUserOne: string
+test.beforeEach('Creating object', async () => {
+	uuidUserOne = await (await createApiBase()).createObject(dataRequest.userOne)
 })
-
-test.afterEach('Creating object', async () => {
-	const requestContext = await request.newContext()
-	await requestContext.delete(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: `[{"_uuid": "${uuid}"}]`,
-	})
-	await requestContext.dispose()
+test.afterEach('Deleting created object', async () => {
+	await (await createApiBase()).deleteObject(uuidUserOne)
 })
 test.describe('Deleting specific created object', async () => {
 	test('Valid url and data, with token -> object created', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.delete(`${urls.main}user/${uuid}`, {
+		let response: APIResponse = await requestContext.delete(`${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -52,7 +36,7 @@ test.describe('Deleting specific created object', async () => {
 
 	test('Invaild url -> 404 error', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.delete(`asas${urls.main}user/${uuid}`, {
+		let response: APIResponse = await requestContext.delete(`asas${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -74,7 +58,7 @@ test.describe('Deleting specific created object', async () => {
 
 	test('Without token -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.delete(`${urls.main}user/${uuid}`, {
+		let response: APIResponse = await requestContext.delete(`${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: ``,
 			},

@@ -1,33 +1,19 @@
 import { test, expect, request, APIResponse } from '@playwright/test'
 import { urls } from '../../common/urls'
 import { dataRequest } from '../../common/data'
+import { createApiBase } from '../../common/apiBase'
 
-let uuidUser: string
+let uuidUserOne: string
 test.beforeEach('Creating object', async () => {
-	const requestContext = await request.newContext()
-	let response: APIResponse = await requestContext.post(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: dataRequest.userOne,
-	})
-	uuidUser = await (await response.json()).items[0]._uuid
-	await requestContext.dispose()
+	uuidUserOne = await (await createApiBase()).createObject(dataRequest.userOne)
 })
 test.afterEach('Deleting created object', async () => {
-	const requestContext = await request.newContext()
-	await requestContext.delete(`${urls.main}user`, {
-		headers: {
-			Authorization: `Bearer ${process.env.API_KEY}`,
-		},
-		data: `[{"_uuid": "${uuidUser}"}]`,
-	})
-	await requestContext.dispose()
+	await (await createApiBase()).deleteObject(uuidUserOne)
 })
 test.describe('Updating specific created object', async () => {
 	test('Valid url and data, with token -> updating specific created object', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.put(`${urls.main}user/${uuidUser}`, {
+		let response: APIResponse = await requestContext.put(`${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -51,7 +37,7 @@ test.describe('Updating specific created object', async () => {
 
 	test('Invalid url -> 404 error', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.put(`!@!@${urls.main}user/${uuidUser}`, {
+		let response: APIResponse = await requestContext.put(`!@!@${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -63,7 +49,7 @@ test.describe('Updating specific created object', async () => {
 
 	test('Invalid method -> 405 error', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.post(`${urls.main}user/${uuidUser}`, {
+		let response: APIResponse = await requestContext.post(`${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -75,7 +61,7 @@ test.describe('Updating specific created object', async () => {
 
 	test('Invalid uuid -> 405 error', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.post(`${urls.main}user/${uuidUser}888`, {
+		let response: APIResponse = await requestContext.post(`${urls.main}user/${uuidUserOne}888`, {
 			headers: {
 				Authorization: `Bearer ${process.env.API_KEY}`,
 			},
@@ -87,7 +73,7 @@ test.describe('Updating specific created object', async () => {
 
 	test('Without token -> 400 error', async () => {
 		const requestContext = await request.newContext()
-		let response: APIResponse = await requestContext.put(`${urls.main}user/${uuidUser}`, {
+		let response: APIResponse = await requestContext.put(`${urls.main}user/${uuidUserOne}`, {
 			headers: {
 				Authorization: ``,
 			},
