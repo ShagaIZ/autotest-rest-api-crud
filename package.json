@@ -12,12 +12,12 @@
 	"author": "",
 	"license": "ISC",
 	"devDependencies": {
-		"@playwright/test": "^1.40.1",
-		"@types/node": "^20.10.8",
-		"prettier": "3.2.4"
+		"@playwright/test": "^1.50.1",
+		"@types/node": "^22.13.1",
+		"prettier": "3.4.2"
 	},
 	"dependencies": {
-		"dotenv": "10.0.0",
-		"dotenv-cli": "4.1.1"
+		"dotenv": "16.4.7",
+		"dotenv-cli": "8.0.0"
 	}
 }
