@@ -9,10 +9,10 @@ test.describe('Getting unix time', async () => {
       },
     });
     await expect(response).toBeOK();
-    await expect(response.status()).toBe(200);
-    await expect((await response.json()).time).toBeTruthy();
-    await expect((await response.json()).time).toBeGreaterThan(1700000000);
-    await expect((await response.json()).time).toBeLessThan(2000000000);
+    expect(response.status()).toBe(200);
+    expect((await response.json()).time).toBeTruthy();
+    expect((await response.json()).time).toBeGreaterThan(1700000000);
+    expect((await response.json()).time).toBeLessThan(2000000000);
     await requestContext.dispose();
   });
 
@@ -23,7 +23,7 @@ test.describe('Getting unix time', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect(response.status()).toBe(404);
+    expect(response.status()).toBe(404);
     await requestContext.dispose();
   });
 
@@ -34,8 +34,8 @@ test.describe('Getting unix time', async () => {
         Authorization: ``,
       },
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -46,8 +46,8 @@ test.describe('Getting unix time', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 });

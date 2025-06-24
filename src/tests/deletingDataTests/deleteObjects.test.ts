@@ -35,44 +35,44 @@ test.describe('Deleting objects', async () => {
 
     //First block assertation
     await expect(resDeleteUserOne).toBeOK();
-    await expect(resDeleteUserOne.status()).toBe(200);
-    await expect((await resDeleteUserOne.json()).items[0]).toBeTruthy();
-    await expect((await resDeleteUserOne.json()).items[0]._created).toBeTruthy();
-    await expect((await resDeleteUserOne.json()).items[0]._data_type).toBeTruthy();
-    await expect((await resDeleteUserOne.json()).items[0]._is_deleted).toBe(true);
-    await expect((await resDeleteUserOne.json()).items[0]._modified).toBeTruthy();
-    await expect((await resDeleteUserOne.json()).items[0]._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await resDeleteUserOne.json()).items[0]._uuid}`,
+    expect(resDeleteUserOne.status()).toBe(200);
+    expect((await resDeleteUserOne.json()).items[0]).toBeTruthy();
+    expect((await resDeleteUserOne.json()).items[0]._created).toBeTruthy();
+    expect((await resDeleteUserOne.json()).items[0]._data_type).toBeTruthy();
+    expect((await resDeleteUserOne.json()).items[0]._is_deleted).toBe(true);
+    expect((await resDeleteUserOne.json()).items[0]._modified).toBeTruthy();
+    expect((await resDeleteUserOne.json()).items[0]._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await resDeleteUserOne.json()).items[0]._uuid}`
     );
-    await expect((await resDeleteUserOne.json()).items[0]._user).toBeTruthy();
-    await expect((await resDeleteUserOne.json()).items[0]._uuid).toBeTruthy();
-    await expect((await resDeleteUserOne.json()).items[0].city).toBe(
-      JSON.parse(dataRequest.userOne)[0].city,
+    expect((await resDeleteUserOne.json()).items[0]._user).toBeTruthy();
+    expect((await resDeleteUserOne.json()).items[0]._uuid).toBeTruthy();
+    expect((await resDeleteUserOne.json()).items[0].city).toBe(
+      JSON.parse(dataRequest.userOne)[0].city
     );
-    await expect((await resDeleteUserOne.json()).items[0].name).toBe(
-      JSON.parse(dataRequest.userOne)[0].name,
+    expect((await resDeleteUserOne.json()).items[0].name).toBe(
+      JSON.parse(dataRequest.userOne)[0].name
     );
-    await expect((await resDeleteUserOne.json()).items[0].age).toBe(25);
+    expect((await resDeleteUserOne.json()).items[0].age).toBe(25);
     //Second block assertation
     await expect(resDeleteUserTwo).toBeOK();
-    await expect(resDeleteUserTwo.status()).toBe(200);
-    await expect((await resDeleteUserTwo.json()).items[0]).toBeTruthy();
-    await expect((await resDeleteUserTwo.json()).items[0]._created).toBeTruthy();
-    await expect((await resDeleteUserTwo.json()).items[0]._data_type).toBeTruthy();
-    await expect((await resDeleteUserTwo.json()).items[0]._is_deleted).toBe(true);
-    await expect((await resDeleteUserTwo.json()).items[0]._modified).toBeTruthy();
-    await expect((await resDeleteUserTwo.json()).items[0]._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await resDeleteUserTwo.json()).items[0]._uuid}`,
+    expect(resDeleteUserTwo.status()).toBe(200);
+    expect((await resDeleteUserTwo.json()).items[0]).toBeTruthy();
+    expect((await resDeleteUserTwo.json()).items[0]._created).toBeTruthy();
+    expect((await resDeleteUserTwo.json()).items[0]._data_type).toBeTruthy();
+    expect((await resDeleteUserTwo.json()).items[0]._is_deleted).toBe(true);
+    expect((await resDeleteUserTwo.json()).items[0]._modified).toBeTruthy();
+    expect((await resDeleteUserTwo.json()).items[0]._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await resDeleteUserTwo.json()).items[0]._uuid}`
     );
-    await expect((await resDeleteUserTwo.json()).items[0]._user).toBeTruthy();
-    await expect((await resDeleteUserTwo.json()).items[0]._uuid).toBeTruthy();
-    await expect((await resDeleteUserTwo.json()).items[0].city).toBe(
-      JSON.parse(dataRequest.userTwo)[0].city,
+    expect((await resDeleteUserTwo.json()).items[0]._user).toBeTruthy();
+    expect((await resDeleteUserTwo.json()).items[0]._uuid).toBeTruthy();
+    expect((await resDeleteUserTwo.json()).items[0].city).toBe(
+      JSON.parse(dataRequest.userTwo)[0].city
     );
-    await expect((await resDeleteUserTwo.json()).items[0].name).toBe(
-      JSON.parse(dataRequest.userTwo)[0].name,
+    expect((await resDeleteUserTwo.json()).items[0].name).toBe(
+      JSON.parse(dataRequest.userTwo)[0].name
     );
-    await expect((await resDeleteUserTwo.json()).items[0].age).toBe(45);
+    expect((await resDeleteUserTwo.json()).items[0].age).toBe(45);
     await requestContextDeleteUserOne.dispose();
     await requestContextDeleteUserTwo.dispose();
   });
@@ -85,7 +85,7 @@ test.describe('Deleting objects', async () => {
       },
       data: `[{"_uuid": "${uuidUserOne}"}]`,
     });
-    await expect(resDelete.status()).toBe(404);
+    expect(resDelete.status()).toBe(404);
     await requestContext.dispose();
   });
 
@@ -97,8 +97,8 @@ test.describe('Deleting objects', async () => {
       },
       data: ``,
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -110,7 +110,7 @@ test.describe('Deleting objects', async () => {
       },
       data: `[{"_uuid": "${uuidUserTwo}"}]`,
     });
-    await expect(response.status()).toBe(400);
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -123,8 +123,8 @@ test.describe('Deleting objects', async () => {
       data: `[{"_uuid": "${uuidUserOne}"}]`,
     });
 
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 });

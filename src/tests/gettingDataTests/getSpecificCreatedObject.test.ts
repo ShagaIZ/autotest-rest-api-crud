@@ -21,20 +21,20 @@ test.describe('Geting data of specific created object', async () => {
       },
     });
     await expect(response).toBeOK();
-    await expect(response.status()).toBe(200);
-    await expect(await response.json()).toBeTruthy();
-    await expect((await response.json())._created).toBeTruthy();
-    await expect((await response.json())._data_type).toBeTruthy();
-    await expect((await response.json())._is_deleted).toBe(false);
-    await expect((await response.json())._modified).toBeTruthy();
-    await expect((await response.json())._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await response.json())._uuid}`,
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toBeTruthy();
+    expect((await response.json())._created).toBeTruthy();
+    expect((await response.json())._data_type).toBeTruthy();
+    expect((await response.json())._is_deleted).toBe(false);
+    expect((await response.json())._modified).toBeTruthy();
+    expect((await response.json())._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await response.json())._uuid}`
     );
-    await expect((await response.json())._user).toBeTruthy();
-    await expect((await response.json())._uuid).toBeTruthy();
-    await expect((await response.json()).city).toBe(JSON.parse(dataRequest.userTwo)[0].city);
-    await expect((await response.json()).name).toBe(JSON.parse(dataRequest.userTwo)[0].name);
-    await expect((await response.json()).age).toBe(45);
+    expect((await response.json())._user).toBeTruthy();
+    expect((await response.json())._uuid).toBeTruthy();
+    expect((await response.json()).city).toBe(JSON.parse(dataRequest.userTwo)[0].city);
+    expect((await response.json()).name).toBe(JSON.parse(dataRequest.userTwo)[0].name);
+    expect((await response.json()).age).toBe(45);
     await requestContext.dispose();
   });
 
@@ -45,7 +45,7 @@ test.describe('Geting data of specific created object', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect(response.status()).toBe(400);
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -56,7 +56,7 @@ test.describe('Geting data of specific created object', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect(response.status()).toBe(405);
+    expect(response.status()).toBe(405);
     await requestContext.dispose();
   });
 
@@ -67,8 +67,8 @@ test.describe('Geting data of specific created object', async () => {
         Authorization: ``,
       },
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -79,7 +79,7 @@ test.describe('Geting data of specific created object', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect(response.status()).toBe(405);
+    expect(response.status()).toBe(405);
     await requestContext.dispose();
   });
 });
