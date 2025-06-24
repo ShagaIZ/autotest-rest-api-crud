@@ -20,20 +20,20 @@ test.describe('Updating specific created object', async () => {
       data: dataRequest.userThree,
     });
     await expect(response).toBeOK();
-    await expect(response.status()).toBe(200);
-    await expect(await response.json()).toBeTruthy();
-    await expect((await response.json())._created).toBeTruthy();
-    await expect((await response.json())._data_type).toBeTruthy();
-    await expect((await response.json())._is_deleted).toBe(false);
-    await expect((await response.json())._modified).toBeTruthy();
-    await expect((await response.json())._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await response.json())._uuid}`,
+    expect(response.status()).toBe(200);
+    expect(await response.json()).toBeTruthy();
+    expect((await response.json())._created).toBeTruthy();
+    expect((await response.json())._data_type).toBeTruthy();
+    expect((await response.json())._is_deleted).toBe(false);
+    expect((await response.json())._modified).toBeTruthy();
+    expect((await response.json())._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await response.json())._uuid}`
     );
-    await expect((await response.json())._user).toBeTruthy();
-    await expect((await response.json())._uuid).toBeTruthy();
-    await expect((await response.json()).city).toBe(JSON.parse(dataRequest.userThree).city);
-    await expect((await response.json()).name).toBe(JSON.parse(dataRequest.userThree).name);
-    await expect((await response.json()).age).toBe(20);
+    expect((await response.json())._user).toBeTruthy();
+    expect((await response.json())._uuid).toBeTruthy();
+    expect((await response.json()).city).toBe(JSON.parse(dataRequest.userThree).city);
+    expect((await response.json()).name).toBe(JSON.parse(dataRequest.userThree).name);
+    expect((await response.json()).age).toBe(20);
     await requestContext.dispose();
   });
 
@@ -45,7 +45,7 @@ test.describe('Updating specific created object', async () => {
       },
       data: dataRequest.userThree,
     });
-    await expect(response.status()).toBe(404);
+    expect(response.status()).toBe(404);
     await requestContext.dispose();
   });
 
@@ -57,7 +57,7 @@ test.describe('Updating specific created object', async () => {
       },
       data: dataRequest.userThree,
     });
-    await expect(response.status()).toBe(405);
+    expect(response.status()).toBe(405);
     await requestContext.dispose();
   });
 
@@ -69,7 +69,7 @@ test.describe('Updating specific created object', async () => {
       },
       data: dataRequest.userThree,
     });
-    await expect(response.status()).toBe(405);
+    expect(response.status()).toBe(405);
     await requestContext.dispose();
   });
 
@@ -81,8 +81,8 @@ test.describe('Updating specific created object', async () => {
       },
       data: dataRequest.userThree,
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 });

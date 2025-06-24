@@ -24,41 +24,41 @@ test.describe('Geting data of created objects', async () => {
       },
     });
     await expect(response).toBeOK();
-    await expect(response.status()).toBe(200);
-    await expect((await response.json()).items[1]).toBeTruthy();
-    await expect((await response.json()).items[1]._created).toBeTruthy();
-    await expect((await response.json()).items[1]._data_type).toBeTruthy();
-    await expect((await response.json()).items[1]._is_deleted).toBe(false);
-    await expect((await response.json()).items[1]._modified).toBeTruthy();
-    await expect((await response.json()).items[1]._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await response.json()).items[1]._uuid}`,
+    expect(response.status()).toBe(200);
+    expect((await response.json()).items[1]).toBeTruthy();
+    expect((await response.json()).items[1]._created).toBeTruthy();
+    expect((await response.json()).items[1]._data_type).toBeTruthy();
+    expect((await response.json()).items[1]._is_deleted).toBe(false);
+    expect((await response.json()).items[1]._modified).toBeTruthy();
+    expect((await response.json()).items[1]._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await response.json()).items[1]._uuid}`
     );
-    await expect((await response.json()).items[1]._user).toBeTruthy();
-    await expect((await response.json()).items[1]._uuid).toBeTruthy();
-    await expect((await response.json()).items[1].city).toBe(
-      JSON.parse(dataRequest.userOne)[0].city,
+    expect((await response.json()).items[1]._user).toBeTruthy();
+    expect((await response.json()).items[1]._uuid).toBeTruthy();
+    expect((await response.json()).items[1].city).toBe(
+      JSON.parse(dataRequest.userOne)[0].city
     );
-    await expect((await response.json()).items[1].name).toBe(
-      JSON.parse(dataRequest.userOne)[0].name,
+    expect((await response.json()).items[1].name).toBe(
+      JSON.parse(dataRequest.userOne)[0].name
     );
-    await expect((await response.json()).items[1].age).toBe(25);
-    await expect((await response.json()).items[0]).toBeTruthy();
-    await expect((await response.json()).items[0]._created).toBeTruthy();
-    await expect((await response.json()).items[0]._data_type).toBeTruthy();
-    await expect((await response.json()).items[0]._is_deleted).toBe(false);
-    await expect((await response.json()).items[0]._modified).toBeTruthy();
-    await expect((await response.json()).items[0]._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await response.json()).items[0]._uuid}`,
+    expect((await response.json()).items[1].age).toBe(25);
+    expect((await response.json()).items[0]).toBeTruthy();
+    expect((await response.json()).items[0]._created).toBeTruthy();
+    expect((await response.json()).items[0]._data_type).toBeTruthy();
+    expect((await response.json()).items[0]._is_deleted).toBe(false);
+    expect((await response.json()).items[0]._modified).toBeTruthy();
+    expect((await response.json()).items[0]._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await response.json()).items[0]._uuid}`
     );
-    await expect((await response.json()).items[0]._user).toBeTruthy();
-    await expect((await response.json()).items[0]._uuid).toBeTruthy();
-    await expect((await response.json()).items[0].city).toBe(
-      JSON.parse(dataRequest.userTwo)[0].city,
+    expect((await response.json()).items[0]._user).toBeTruthy();
+    expect((await response.json()).items[0]._uuid).toBeTruthy();
+    expect((await response.json()).items[0].city).toBe(
+      JSON.parse(dataRequest.userTwo)[0].city
     );
-    await expect((await response.json()).items[0].name).toBe(
-      JSON.parse(dataRequest.userTwo)[0].name,
+    expect((await response.json()).items[0].name).toBe(
+      JSON.parse(dataRequest.userTwo)[0].name
     );
-    await expect((await response.json()).items[0].age).toBe(45);
+    expect((await response.json()).items[0].age).toBe(45);
     await requestContext.dispose();
   });
 
@@ -69,7 +69,7 @@ test.describe('Geting data of created objects', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect(response.status()).toBe(400);
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -80,8 +80,8 @@ test.describe('Geting data of created objects', async () => {
         Authorization: `Bearer ${process.env.API_KEY}`,
       },
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -92,8 +92,8 @@ test.describe('Geting data of created objects', async () => {
         Authorization: ``,
       },
     });
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 });

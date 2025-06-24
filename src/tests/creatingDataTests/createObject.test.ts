@@ -9,7 +9,7 @@ test.afterEach('Deleting created object', async () => {
 });
 
 test.describe('Creating object', async () => {
-  test('Valid url and data, with token -> object created', async () => {
+  test.only('Valid url and data, with token -> object created', async () => {
     const requestContext = await request.newContext();
     const response: APIResponse = await requestContext.post(`${urls.main}user`, {
       headers: {
@@ -19,24 +19,24 @@ test.describe('Creating object', async () => {
     });
     uuid = await (await response.json()).items[0]._uuid;
     await expect(response).toBeOK();
-    await expect(response.status()).toBe(201);
-    await expect((await response.json()).items[0]).toBeTruthy();
-    await expect((await response.json()).items[0]._created).toBeTruthy();
-    await expect((await response.json()).items[0]._data_type).toBeTruthy();
-    await expect((await response.json()).items[0]._is_deleted).toBe(false);
-    await expect((await response.json()).items[0]._modified).toBeTruthy();
-    await expect((await response.json()).items[0]._self_link).toBe(
-      `${urls.base}${urls.main}user/${(await response.json()).items[0]._uuid}`,
+    expect(response.status()).toBe(201);
+    expect((await response.json()).items[0]).toBeTruthy();
+    expect((await response.json()).items[0]._created).toBeTruthy();
+    expect((await response.json()).items[0]._data_type).toBeTruthy();
+    expect((await response.json()).items[0]._is_deleted).toBe(false);
+    expect((await response.json()).items[0]._modified).toBeTruthy();
+    expect((await response.json()).items[0]._self_link).toBe(
+      `${urls.base}${urls.main}user/${(await response.json()).items[0]._uuid}`
     );
-    await expect((await response.json()).items[0]._user).toBeTruthy();
-    await expect((await response.json()).items[0]._uuid).toBeTruthy();
-    await expect((await response.json()).items[0].city).toBe(
-      JSON.parse(dataRequest.userOne)[0].city,
+    expect((await response.json()).items[0]._user).toBeTruthy();
+    expect((await response.json()).items[0]._uuid).toBeTruthy();
+    expect((await response.json()).items[0].city).toBe(
+      JSON.parse(dataRequest.userOne)[0].city
     );
-    await expect((await response.json()).items[0].name).toBe(
-      JSON.parse(dataRequest.userOne)[0].name,
+    expect((await response.json()).items[0].name).toBe(
+      JSON.parse(dataRequest.userOne)[0].name
     );
-    await expect((await response.json()).items[0].age).toBe(25);
+    expect((await response.json()).items[0].age).toBe(25);
     await requestContext.dispose();
   });
 
@@ -48,7 +48,7 @@ test.describe('Creating object', async () => {
       },
       data: dataRequest.userOne,
     });
-    await expect(response.status()).toBe(405);
+    expect(response.status()).toBe(405);
     await requestContext.dispose();
   });
 
@@ -61,8 +61,8 @@ test.describe('Creating object', async () => {
       data: '',
     });
 
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -74,7 +74,7 @@ test.describe('Creating object', async () => {
       },
       data: dataRequest.userOne,
     });
-    await expect(response.status()).toBe(400);
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 
@@ -87,8 +87,8 @@ test.describe('Creating object', async () => {
       data: dataRequest.userOne,
     });
 
-    await expect((await response.json()).error).toBe('Bad request');
-    await expect(response.status()).toBe(400);
+    expect((await response.json()).error).toBe('Bad request');
+    expect(response.status()).toBe(400);
     await requestContext.dispose();
   });
 });
